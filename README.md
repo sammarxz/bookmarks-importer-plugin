@@ -2,6 +2,8 @@
 
 Transform your browser bookmarks into beautiful, organized Obsidian notes with HD screenshots and multiple viewing options.
 
+![Bookmarks Importer Preview](preview.png)
+
 ## ✨ Features
 
 ### 🎨 **Three Viewing Modes**
@@ -12,7 +14,6 @@ Transform your browser bookmarks into beautiful, organized Obsidian notes with H
 ### 🖼️ **HD Screenshots**
 - **High-quality thumbnails** at 1920×1080 resolution
 - **Smart fallbacks** with placeholder images when screenshots fail
-- **Responsive design** that looks great on any screen size
 
 ### ⚡ **Advanced File Management**
 - **Custom filename patterns** with variables like `{title}`, `{date}`, `{timestamp}`
@@ -23,19 +24,6 @@ Transform your browser bookmarks into beautiful, organized Obsidian notes with H
 ### 🌐 **Universal Compatibility**
 - Import from **any browser** (Chrome, Firefox, Safari, Edge)
 - Preserves **folder hierarchy** and bookmark organization
-- **Mobile-friendly** design that works on all devices
-
-## 🚀 Installation
-
-### From Obsidian Community Plugins
-1. Open **Settings** → **Community plugins**
-2. Search for "**Bookmarks Importer**"
-3. **Install** and **Enable** the plugin
-
-### Manual Installation
-1. Download the [latest release](https://github.com/sammarxz/obsidian-bookmarks-importer/releases)
-2. Extract `main.js`, `manifest.json`, and `styles.css` to your vault's `.obsidian/plugins/bookmarks-importer/` folder
-3. Reload Obsidian and enable the plugin
 
 ## 📖 How to Use
 
