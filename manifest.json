@@ -3,7 +3,7 @@
     "name": "Bookmarks Importer",
     "version": "1.0.0",
     "minAppVersion": "0.15.0",
-    "description": "Import browser bookmarks from HTML files with HD screenshots and organize them as beautiful Obsidian notes with cards, table, or list views",
+    "description": "Import browser bookmarks from HTML files with HD screenshots and organize them as beautiful notes with cards, table, or list views",
     "author": "Sam Marxz",
     "authorUrl": "https://github.com/sammarxz",
     "fundingUrl": "https://github.com/sponsors/sammarxz",
