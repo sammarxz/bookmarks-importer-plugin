@@ -1,4 +1,3 @@
-// main.ts
 import {
 	App,
 	Plugin,
@@ -11,7 +10,13 @@ import {
 interface BookmarksPluginSettings {
 	outputFileName: string;
 	fileNamePattern: string;
-	dateFormat: "YYYY-MM-DD" | "DD-MM-YYYY" | "MM-DD-YYYY" | "YYYY/MM/DD" | "DD/MM/YYYY" | "MM/DD/YYYY";
+	dateFormat:
+		| "YYYY-MM-DD"
+		| "DD-MM-YYYY"
+		| "MM-DD-YYYY"
+		| "YYYY/MM/DD"
+		| "DD/MM/YYYY"
+		| "MM/DD/YYYY";
 	outputFolder: string;
 	includeDescriptions: boolean;
 	createFolderStructure: boolean;
@@ -123,9 +128,7 @@ export default class BookmarksImporterPlugin extends Plugin {
 				doc.querySelector("dl") || doc.querySelector("DL");
 
 			if (!bookmarksList) {
-				throw new Error(
-					"Bookmark structure not found in HTML file"
-				);
+				throw new Error("Bookmark structure not found in HTML file");
 			}
 
 			// Extract bookmarks
@@ -199,7 +202,7 @@ export default class BookmarksImporterPlugin extends Plugin {
 		return null;
 	}
 
-	generateMarkdown(bookmarks: Bookmark[], level: number = 0): string {
+	generateMarkdown(bookmarks: Bookmark[], level = 0): string {
 		if (level === 0) {
 			switch (this.settings.viewMode) {
 				case "table":
@@ -232,7 +235,9 @@ export default class BookmarksImporterPlugin extends Plugin {
 			const screenshot = this.generateScreenshotUrl(bookmark.url);
 			const screenshotCell = `![Screenshot](${screenshot})`;
 			// Combine title and URL in a single cell
-			const siteCell = `[${this.escapeMarkdown(bookmark.title)}](${bookmark.url})`;
+			const siteCell = `[${this.escapeMarkdown(bookmark.title)}](${
+				bookmark.url
+			})`;
 
 			markdown += `| ${screenshotCell} | ${siteCell} |\n`;
 		}
@@ -255,7 +260,7 @@ export default class BookmarksImporterPlugin extends Plugin {
 		for (const bookmark of flatBookmarks) {
 			const screenshot = this.generateScreenshotUrl(bookmark.url);
 			const title = this.escapeMarkdown(bookmark.title);
-			
+
 			markdown += `<div class="bookmark-card">\n`;
 			markdown += `  <a href="${bookmark.url}" class="bookmark-card-link">\n`;
 			markdown += `    <div class="bookmark-card-image">\n`;
@@ -263,17 +268,19 @@ export default class BookmarksImporterPlugin extends Plugin {
 			markdown += `    </div>\n`;
 			markdown += `    <div class="bookmark-card-content">\n`;
 			markdown += `      <h3 class="bookmark-card-title">${title}</h3>\n`;
-			markdown += `      <p class="bookmark-card-url">${this.getDomainFromUrl(bookmark.url)}</p>\n`;
+			markdown += `      <p class="bookmark-card-url">${this.getDomainFromUrl(
+				bookmark.url
+			)}</p>\n`;
 			markdown += `    </div>\n`;
 			markdown += `  </a>\n`;
 			markdown += `</div>\n\n`;
 		}
 
-		markdown += '</div>\n\n';
+		markdown += "</div>\n\n";
 		return markdown;
 	}
 
-	generateListMarkdown(bookmarks: Bookmark[], level: number = 0): string {
+	generateListMarkdown(bookmarks: Bookmark[], level = 0): string {
 		let markdown = "";
 
 		for (const bookmark of bookmarks) {
@@ -311,7 +318,7 @@ export default class BookmarksImporterPlugin extends Plugin {
 
 	flattenBookmarks(
 		bookmarks: Bookmark[],
-		currentFolder: string = ""
+		currentFolder = ""
 	): Array<Bookmark & { folder: string }> {
 		const flattened: Array<Bookmark & { folder: string }> = [];
 
@@ -385,40 +392,55 @@ export default class BookmarksImporterPlugin extends Plugin {
 	}
 
 	extractCreationDate(doc: Document, htmlContent: string): string {
-		// Tentar extrair data de comentários HTML (comum em arquivos de bookmark)
-		const commentMatches = htmlContent.match(/<!--.*?(\d{4}-\d{2}-\d{2}).*?-->/);
+		let extractedDate: Date | null = null;
+
+		// Try to extract date from HTML comments (common in bookmark files)
+		const commentMatches = htmlContent.match(
+			/<!--.*?(\d{4}-\d{2}-\d{2}).*?-->/
+		);
 		if (commentMatches) {
-			return commentMatches[1];
+			extractedDate = new Date(commentMatches[1]);
 		}
 
-		// Tentar extrair data do título ou meta tags
-		const title = doc.querySelector("title")?.textContent;
-		if (title) {
-			const titleDateMatch = title.match(/(\d{4}-\d{2}-\d{2})/);
-			if (titleDateMatch) {
-				return titleDateMatch[1];
+		// Try to extract date from title or meta tags
+		if (!extractedDate) {
+			const title = doc.querySelector("title")?.textContent;
+			if (title) {
+				const titleDateMatch = title.match(/(\d{4}-\d{2}-\d{2})/);
+				if (titleDateMatch) {
+					extractedDate = new Date(titleDateMatch[1]);
+				}
 			}
 		}
 
-		// Tentar encontrar data no primeiro bookmark
-		const firstBookmark = doc.querySelector("a[add_date]");
-		if (firstBookmark) {
-			const timestamp = firstBookmark.getAttribute("add_date");
-			if (timestamp) {
-				const date = new Date(parseInt(timestamp) * 1000);
-				return date.toISOString().split("T")[0];
+		// Try to find date in first bookmark
+		if (!extractedDate) {
+			const firstBookmark = doc.querySelector("a[add_date]");
+			if (firstBookmark) {
+				const timestamp = firstBookmark.getAttribute("add_date");
+				if (timestamp) {
+					extractedDate = new Date(parseInt(timestamp) * 1000);
+				}
 			}
 		}
 
-		// Fallback para data atual
-		return new Date().toISOString().split("T")[0];
+		// Fallback to current date
+		if (!extractedDate) {
+			extractedDate = new Date();
+		}
+
+		// Format the date according to user's preference
+		return this.formatDateForFilename(
+			extractedDate,
+			this.settings.dateFormat
+		);
 	}
 
 	escapeMarkdown(text: string): string {
 		return text.replace(/\|/g, "\\|").replace(/\n/g, " ");
 	}
 
-	truncateUrl(url: string, maxLength: number = 40): string {
+	truncateUrl(url: string, maxLength = 40): string {
 		if (!url) return "";
 		return url.length > maxLength ? url.slice(0, maxLength) + "..." : url;
 	}
@@ -435,29 +457,32 @@ export default class BookmarksImporterPlugin extends Plugin {
 
 	formatDateForFilename(date: Date, format: string): string {
 		const year = date.getFullYear();
-		const month = String(date.getMonth() + 1).padStart(2, '0');
-		const day = String(date.getDate()).padStart(2, '0');
-		
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const day = String(date.getDate()).padStart(2, "0");
+
 		return format
-			.replace('YYYY', year.toString())
-			.replace('MM', month)
-			.replace('DD', day);
+			.replace("YYYY", year.toString())
+			.replace("MM", month)
+			.replace("DD", day);
 	}
 
 	generateFileName(creationDate: string): string {
 		const pattern = this.settings.fileNamePattern || "{title} {date}";
 		const title = this.settings.outputFileName || "Bookmarks";
-		
+
 		return pattern
-			.replace('{title}', title)
-			.replace('{date}', creationDate)
-			.replace('{timestamp}', Date.now().toString());
+			.replace("{title}", title)
+			.replace("{date}", creationDate)
+			.replace("{timestamp}", Date.now().toString());
 	}
 
-	async createBookmarksFile(markdown: string, creationDate: string): Promise<void> {
+	async createBookmarksFile(
+		markdown: string,
+		creationDate: string
+	): Promise<void> {
 		const baseFileName = this.generateFileName(creationDate);
 		const fileName = `${baseFileName}.md`;
-		
+
 		// Build full file path with output folder
 		let filePath = fileName;
 		if (this.settings.outputFolder.trim()) {
@@ -472,7 +497,9 @@ export default class BookmarksImporterPlugin extends Plugin {
 		}
 
 		// Add header
-		const header = `# Bookmarks\n\n*Imported on: ${new Date().toISOString().split("T")[0]}*\n*Creation date: ${creationDate}*\n\n---\n\n`;
+		const header = `# Bookmarks\n\n*Imported on: ${
+			new Date().toISOString().split("T")[0]
+		}*\n*Creation date: ${creationDate}*\n\n---\n\n`;
 		const fullContent = header + markdown;
 
 		// Check if file already exists
@@ -486,8 +513,10 @@ export default class BookmarksImporterPlugin extends Plugin {
 			if (shouldOverwrite) {
 				await this.app.vault.modify(existingFile, fullContent);
 			} else {
-				const timestampFileName = this.generateFileName(creationDate).replace('{timestamp}', Date.now().toString());
-				const newFilePath = this.settings.outputFolder.trim() 
+				const timestampFileName = this.generateFileName(
+					creationDate
+				).replace("{timestamp}", Date.now().toString());
+				const newFilePath = this.settings.outputFolder.trim()
 					? `${this.settings.outputFolder.trim()}/${timestampFileName}.md`
 					: `${timestampFileName}.md`;
 				await this.app.vault.create(newFilePath, fullContent);
@@ -521,13 +550,16 @@ class BookmarksSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Filename pattern")
-			.setDesc("Pattern for generated filenames. Use {title}, {date}, {timestamp}")
+			.setDesc(
+				"Pattern for generated filenames. Use {title}, {date}, {timestamp}"
+			)
 			.addText((text) =>
 				text
 					.setPlaceholder("{title} {date}")
 					.setValue(this.plugin.settings.fileNamePattern)
 					.onChange(async (value) => {
-						this.plugin.settings.fileNamePattern = value || "{title} {date}";
+						this.plugin.settings.fileNamePattern =
+							value || "{title} {date}";
 						await this.plugin.saveSettings();
 					})
 			);
@@ -540,7 +572,8 @@ class BookmarksSettingTab extends PluginSettingTab {
 					.setPlaceholder("Bookmarks")
 					.setValue(this.plugin.settings.outputFileName)
 					.onChange(async (value) => {
-						this.plugin.settings.outputFileName = value || "Bookmarks";
+						this.plugin.settings.outputFileName =
+							value || "Bookmarks";
 						await this.plugin.saveSettings();
 					})
 			);
@@ -557,15 +590,27 @@ class BookmarksSettingTab extends PluginSettingTab {
 					.addOption("DD/MM/YYYY", "31/12/2023")
 					.addOption("MM/DD/YYYY", "12/31/2023")
 					.setValue(this.plugin.settings.dateFormat)
-					.onChange(async (value: "YYYY-MM-DD" | "DD-MM-YYYY" | "MM-DD-YYYY" | "YYYY/MM/DD" | "DD/MM/YYYY" | "MM/DD/YYYY") => {
-						this.plugin.settings.dateFormat = value;
-						await this.plugin.saveSettings();
-					})
+					.onChange(
+						async (
+							value:
+								| "YYYY-MM-DD"
+								| "DD-MM-YYYY"
+								| "MM-DD-YYYY"
+								| "YYYY/MM/DD"
+								| "DD/MM/YYYY"
+								| "MM/DD/YYYY"
+						) => {
+							this.plugin.settings.dateFormat = value;
+							await this.plugin.saveSettings();
+						}
+					)
 			);
 
 		new Setting(containerEl)
 			.setName("Output folder")
-			.setDesc("Folder to save bookmark files (leave empty for vault root)")
+			.setDesc(
+				"Folder to save bookmark files (leave empty for vault root)"
+			)
 			.addText((text) =>
 				text
 					.setPlaceholder("Bookmarks")
