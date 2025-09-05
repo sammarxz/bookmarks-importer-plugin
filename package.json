@@ -1,16 +1,26 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-bookmarks-importer",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Import browser bookmarks from HTML files with HD screenshots and organize them as beautiful Obsidian notes with cards, table, or list views",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"build-plugin": "npm run build && npm run copy-files",
+		"copy-files": "cp main.js manifest.json styles.css dist/",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": ["obsidian", "bookmarks", "import", "browser", "screenshots", "cards", "markdown"],
+	"author": "Sam Marxz <sammarxzz@gmail.com> (https://github.com/sammarxz)",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sammarxz/obsidian-bookmarks-importer"
+	},
+	"homepage": "https://github.com/sammarxz/obsidian-bookmarks-importer#readme",
+	"bugs": {
+		"url": "https://github.com/sammarxz/obsidian-bookmarks-importer/issues"
+	},
 	"devDependencies": {
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",

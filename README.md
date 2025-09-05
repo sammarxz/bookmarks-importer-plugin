@@ -1,94 +1,148 @@
-# Obsidian Sample Plugin
+# Bookmarks Importer for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Transform your browser bookmarks into beautiful, organized Obsidian notes with HD screenshots and multiple viewing options.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## ✨ Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+### 🎨 **Three Viewing Modes**
+- **📱 Cards View** - Visual grid with HD thumbnails and clean typography
+- **📊 Table View** - Compact rows with screenshots and links  
+- **📝 List View** - Hierarchical folder structure with nested organization
 
-## First time developing plugins?
+### 🖼️ **HD Screenshots**
+- **High-quality thumbnails** at 1920×1080 resolution
+- **Smart fallbacks** with placeholder images when screenshots fail
+- **Responsive design** that looks great on any screen size
 
-Quick starting guide for new plugin devs:
+### ⚡ **Advanced File Management**
+- **Custom filename patterns** with variables like `{title}`, `{date}`, `{timestamp}`
+- **Flexible date formats** (YYYY-MM-DD, DD-MM-YYYY, MM/DD/YYYY, etc.)
+- **Output folder selection** to organize your bookmark files
+- **Smart date extraction** from HTML metadata
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+### 🌐 **Universal Compatibility**
+- Import from **any browser** (Chrome, Firefox, Safari, Edge)
+- Preserves **folder hierarchy** and bookmark organization
+- **Mobile-friendly** design that works on all devices
 
-## Releasing new releases
+## 🚀 Installation
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+### From Obsidian Community Plugins
+1. Open **Settings** → **Community plugins**
+2. Search for "**Bookmarks Importer**"
+3. **Install** and **Enable** the plugin
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### Manual Installation
+1. Download the [latest release](https://github.com/sammarxz/obsidian-bookmarks-importer/releases)
+2. Extract `main.js`, `manifest.json`, and `styles.css` to your vault's `.obsidian/plugins/bookmarks-importer/` folder
+3. Reload Obsidian and enable the plugin
 
-## Adding your plugin to the community plugin list
+## 📖 How to Use
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+### 1. Export Bookmarks from Your Browser
 
-## How to use
+#### Chrome/Edge
+1. Open **Bookmarks Manager** (Ctrl+Shift+O)
+2. Click **⋮** → **Export bookmarks**
+3. Save the `.html` file
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+#### Firefox  
+1. **Library** → **Bookmarks** → **Show All Bookmarks**
+2. **Import and Backup** → **Export Bookmarks to HTML**
 
-## Manually installing the plugin
+#### Safari
+1. **File** → **Export Bookmarks**
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+### 2. Import to Obsidian
+1. Click the **bookmark icon** in the ribbon, or use **Ctrl+P** → "Import Bookmarks HTML"
+2. Select your exported `.html` file
+3. Your bookmarks will be imported with the configured view mode!
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+## ⚙️ Configuration
 
-## Funding URL
+Access settings through **Settings** → **Bookmarks Importer**
 
-You can include funding URLs where people who use your plugin can financially support it.
+### File Settings
+- **Filename pattern**: `{title} {date}` (customize with variables)
+- **Base filename**: Default title for your bookmark files  
+- **Date format**: Choose from multiple date formats
+- **Output folder**: Specify where to save bookmark files
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+### Display Settings
+- **View mode**: Cards, Table, or List
+- Automatic screenshot generation with HD quality
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+## 🎯 Examples
+
+### Cards View
+Perfect for visual browsing with large thumbnails and clean design:
+```
+[Visual grid of bookmark cards with screenshots and titles]
 ```
 
-If you have multiple URLs, you can also do:
-
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
+### Table View
+Compact layout ideal for quick scanning:
+```
+| Screenshot | Site |
+|------------|------|
+| [thumb] | [GitHub - sammarxz/awesome-project](https://github.com/...) |
 ```
 
-## API Documentation
+### List View
+Preserves your browser's folder organization:
+```
+# Development
+## Frontend
+- [React Documentation](https://react.dev)
+- [Vue.js Guide](https://vuejs.org)
 
-See https://github.com/obsidianmd/obsidian-api
+## Backend  
+- [Node.js Docs](https://nodejs.org)
+```
+
+## 🔧 Troubleshooting
+
+### Screenshots Not Loading
+- **Normal behavior** - Some websites block screenshot services
+- **Automatic fallback** - Placeholder images will appear instead
+- **HD quality** - Working screenshots will be crisp and clear
+
+### Import Errors
+- **Check file format** - Ensure you're importing an HTML bookmark file
+- **Browser compatibility** - All major browsers are supported
+- **File size** - Large bookmark files may take a moment to process
+
+### File Organization
+- **Output folder** - Check your configured output folder setting
+- **Filename pattern** - Verify your custom filename pattern is valid
+- **Duplicates** - Plugin will prompt before overwriting existing files
+
+## 🤝 Contributing
+
+We welcome contributions! Please check our [issues](https://github.com/sammarxz/obsidian-bookmarks-importer/issues) for ways to help.
+
+### Development Setup
+```bash
+git clone https://github.com/sammarxz/obsidian-bookmarks-importer
+cd obsidian-bookmarks-importer
+npm install
+npm run dev
+```
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 💖 Support
+
+If you find this plugin helpful:
+- ⭐ **Star** the repository
+- 🐛 **Report bugs** via GitHub issues  
+- 💡 **Suggest features** for future updates
+- ☕ **Support development** via [GitHub Sponsors](https://github.com/sponsors/sammarxz)
+
+---
+
+**Made with ❤️ by [Sam Marxz](https://github.com/sammarxz)**
+
+Transform your bookmarks into beautiful, organized knowledge today! 🚀
